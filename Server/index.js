@@ -10,13 +10,16 @@ const fileUpload = require("express-fileupload");
 require("dotenv").config();
 const PORT = process.env.PORT || 4000;
 
-// Middleware
-app.use(
-  cors({
-    origin: "https://chat-app-three-gamma-91.vercel.app/", // frontend origin
-    credentials: true,
-  })
-);
+
+app.use(cors({
+  origin: [
+    "https://chat-app-three-gamma-91.vercel.app/",
+    "http://localhost:3000"
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 app.use(cookieParser());
 app.use(express.json({ limit: "10mb" }));
 app.use(
@@ -55,6 +58,8 @@ const io = require("socket.io")(server, {
   cors: {
     origin: "https://chat-app-three-gamma-91.vercel.app/",
     credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   },
 });
 
