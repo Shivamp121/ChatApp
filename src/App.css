@@ -1,0 +1,13 @@
+/* write your css here */
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@300&display=swap");
+.App{
+    height:100vh;
+    background-image: url("./background.png");
+    background-size: cover;
+    background-position: center;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;
+}
+
