@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 4000;
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:3000", // frontend origin
+    origin: "https://chat-app-three-gamma-91.vercel.app/", // frontend origin
     credentials: true,
   })
 );
@@ -53,7 +53,7 @@ const server = app.listen(PORT, () => {
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://chat-app-three-gamma-91.vercel.app/",
     credentials: true,
   },
 });
