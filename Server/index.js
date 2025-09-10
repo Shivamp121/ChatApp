@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 4000;
 
 app.use(cors({
   origin: [
-    "https://chat-app-three-gamma-91.vercel.app/",
+    "https://chat-app-three-gamma-91.vercel.app",
     "http://localhost:3000"
   ],
   credentials: true,
@@ -56,7 +56,7 @@ const server = app.listen(PORT, () => {
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "https://chat-app-three-gamma-91.vercel.app/",
+    origin: "https://chat-app-three-gamma-91.vercel.app",
     credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
