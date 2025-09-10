@@ -18,8 +18,7 @@ const corsOptions = {
   ],
   credentials: true,
 };
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // handle preflight
+app.use(cors(corsOptions)); // ✅ works for all requests including OPTIONS
 
 // ---- Middlewares ----
 app.use(cookieParser());
@@ -96,7 +95,9 @@ io.on("connection", (socket) => {
       if (user._id.toString() === newMessageRecieved.sender._id.toString()) {
         return;
       }
-      socket.in(user._id.toString()).emit("message recieved", newMessageRecieved);
+      socket
+        .in(user._id.toString())
+        .emit("message recieved", newMessageRecieved);
     });
   });
 
