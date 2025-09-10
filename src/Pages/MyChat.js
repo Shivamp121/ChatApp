@@ -21,7 +21,7 @@ const MyChats = ({ fetchAgain }) => {
         };
 
         const { data } = await axios.get(
-          "http://localhost:4000/api/v1/chat",
+          "https://chatapp-qfdc.onrender.com/chat",
           config
         );
         dispatch(setChats(data));

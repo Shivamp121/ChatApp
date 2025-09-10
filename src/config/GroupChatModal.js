@@ -46,7 +46,7 @@ const GroupChatModal = ({ children }) => {
         headers: { Authorization: `Bearer ${user?.token}` },
       };
       const { data } = await axios.get(
-        `http://localhost:4000/api/v1/auth?search=${query}`,
+        `https://chatapp-qfdc.onrender.com/auth?search=${query}`,
         config
       );
       setSearchResult(data);
@@ -74,7 +74,7 @@ const GroupChatModal = ({ children }) => {
         headers: { Authorization: `Bearer ${user?.token}` },
       };
       const { data } = await axios.post(
-        `http://localhost:4000/api/v1/chat/group`,
+        `https://chatapp-qfdc.onrender.com/chat/group`,
         {
           name: groupChatName,
           users: JSON.stringify(selectedUsers.map((u) => u._id)),

@@ -27,7 +27,7 @@ export function signUp(
 
     const response = await apiConnector(
       "POST",
-      "http://localhost:4000/api/v1/auth/signup",
+      "https://chatapp-qfdc.onrender.com/auth/signup",
       formData,
     );
 
@@ -56,7 +56,7 @@ export function login(email, password, navigate) {
   try {
     const response = await apiConnector(
       "POST",
-      "http://localhost:4000/api/v1/auth/login",
+      "https://chatapp-qfdc.onrender.com/auth/login",
       { email, password },
       { "Content-Type": "application/json" }
     );

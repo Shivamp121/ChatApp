@@ -34,7 +34,7 @@ const Navbar = () => {
     const token = localStorage.getItem("token");
     try {
       const { data } = await axios.get(
-        `http://localhost:4000/api/v1/auth?search=${inputData}`,
+        `https://chatapp-qfdc.onrender.com/auth?search=${inputData}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -55,7 +55,7 @@ const Navbar = () => {
       if (!token) return;
       const config = { headers: { Authorization: `Bearer ${token}` } };
       const { data } = await axios.get(
-        "http://localhost:4000/api/v1/chat",
+        "https://chatapp-qfdc.onrender.com/chat",
         config
       );
       dispatch(setChats(data));
@@ -74,7 +74,7 @@ const Navbar = () => {
         },
       };
       const { data } = await axios.post(
-        "http://localhost:4000/api/v1/chat",
+        "https://chatapp-qfdc.onrender.com/chat",
         { userId },
         config
       );
