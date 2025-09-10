@@ -10,16 +10,18 @@ const fileUpload = require("express-fileupload");
 require("dotenv").config();
 const PORT = process.env.PORT || 4000;
 
-
-app.use(cors({
+// ---- CORS CONFIG ----
+const corsOptions = {
   origin: [
-    "https://chat-app-three-gamma-91.vercel.app",
-    "http://localhost:3000"
+    "https://chat-app-three-gamma-91.vercel.app", // frontend deployed
+    "http://localhost:3000", // local dev
   ],
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+};
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // handle preflight
+
+// ---- Middlewares ----
 app.use(cookieParser());
 app.use(express.json({ limit: "10mb" }));
 app.use(
@@ -29,10 +31,10 @@ app.use(
   })
 );
 
-// Cloudinary connect
+// ---- Cloudinary ----
 cloudinaryConnect();
 
-// Routes
+// ---- Routes ----
 const authRoutes = require("./route/AuthRoute");
 const ChatRoute = require("./route/ChatRoute");
 const messageRoute = require("./route/MessageRoute");
@@ -48,18 +50,20 @@ app.get("/", (req, res) => {
   });
 });
 
-// Server & Socket.io
+// ---- Server ----
 const server = app.listen(PORT, () => {
   console.log(`App is running at port no. ${PORT}`);
 });
 
+// ---- Socket.io ----
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "https://chat-app-three-gamma-91.vercel.app",
+    origin: [
+      "https://chat-app-three-gamma-91.vercel.app",
+      "http://localhost:3000",
+    ],
     credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
   },
 });
 
@@ -69,6 +73,7 @@ io.on("connection", (socket) => {
   // setup
   socket.on("setup", (userData) => {
     socket.join(userData._id);
+    socket.userId = userData._id; // save for disconnect
     socket.emit("connected");
   });
 
@@ -85,27 +90,22 @@ io.on("connection", (socket) => {
   // handle new message
   socket.on("new message", (newMessageRecieved) => {
     const chat = newMessageRecieved.chat;
-
-    if (!chat.users) {
-      return console.log("chat.users not defined");
-    }
+    if (!chat.users) return console.log("chat.users not defined");
 
     chat.users.forEach((user) => {
-      // Skip sender
       if (user._id.toString() === newMessageRecieved.sender._id.toString()) {
         return;
       }
-
       socket.in(user._id.toString()).emit("message recieved", newMessageRecieved);
     });
   });
 
   // disconnect
-  socket.off("setup", () => {
+  socket.on("disconnect", () => {
     console.log("USER DISCONNECTED");
-    socket.leave(userData._id);
+    if (socket.userId) socket.leave(socket.userId);
   });
 });
 
-// Connect to DB
+// ---- Connect to DB ----
 database.connect();
