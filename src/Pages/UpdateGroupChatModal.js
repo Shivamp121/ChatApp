@@ -94,7 +94,7 @@ const UpdateGroupModal = ({ children }) => {
       setLoading(true);
       const config = { headers: { Authorization: `Bearer ${user?.token}` } };
       const { data } = await axios.get(
-        `https://chatapp-server-blzi.onrender.com/auth/api/v1?search=${search}`,
+        `https://chatapp-server-blzi.onrender.com/api/v1/auth?search=${search}`,
         config
       );
       setSearchResult(data);

@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Lottie from "react-lottie";
 import io from "socket.io-client";
 import { IoMdAttach } from "react-icons/io";
+import { IoSend } from "react-icons/io5"; // ✅ Send icon
 
 import ScrollableChat from "./ScrollableChat";
 import ProfileModal from "./ProfileModal";
@@ -12,7 +13,7 @@ import UpdateGroupChatModal from "./UpdateGroupChatModal";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import animationData from "../Animation/typing.json";
 import { useSelector, useDispatch } from "react-redux";
-import { setSelectedChat, addNotification } from "../slices/chatSlice";
+import { setSelectedChat, setNotification } from "../slices/chatSlice";
 
 const ENDPOINT = "https://chatapp-server-blzi.onrender.com";
 let socket, selectedChatCompare;
@@ -35,7 +36,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     rendererSettings: { preserveAspectRatio: "xMidYMid slice" },
   };
 
-  // Fetch chat messages
   const fetchMessages = async () => {
     if (!selectedChat) return;
     try {
@@ -52,7 +52,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
-  // Send a new message
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
       socket.emit("stop typing", selectedChat._id);
@@ -77,7 +76,29 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
-  // Upload file handler
+  const sendMessageButton = async () => {
+    if (!newMessage.trim()) return;
+    socket.emit("stop typing", selectedChat._id);
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.post(
+        `${ENDPOINT}/api/v1/message`,
+        { content: newMessage, chatId: selectedChat._id },
+        config
+      );
+      setNewMessage("");
+      socket.emit("new message", data);
+      setMessages((prev) => [...prev, data]);
+    } catch {
+      toast.error("Failed to send the Message");
+    }
+  };
+
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -100,7 +121,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         );
 
         const newMsg = { ...data, chat: selectedChat };
-
         socket.emit("new message", newMsg);
         setMessages((prev) => [...prev, newMsg]);
       } catch {
@@ -109,7 +129,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     };
   };
 
-  // Socket setup
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
@@ -118,19 +137,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     socket.on("stop typing", () => setIsTyping(false));
   }, [user]);
 
-  // Load messages when chat changes
   useEffect(() => {
     fetchMessages();
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
-  // Handle incoming messages
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
-      // If no chat selected OR it's from a different chat → notification
       if (!selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id) {
         if (!notification.some((n) => n._id === newMessageRecieved._id)) {
-          dispatch(addNotification(newMessageRecieved)); // ✅ save to redux + localStorage
+          dispatch(setNotification([newMessageRecieved, ...notification]));
           setFetchAgain(!fetchAgain);
         }
       } else {
@@ -143,7 +159,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     };
   }, [dispatch, fetchAgain, notification]);
 
-  // Typing handler
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
     if (!socketConnected) return;
@@ -221,6 +236,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   onChange={typingHandler}
                   onKeyDown={sendMessage}
                 />
+
+                {/* ✅ Send button only on small screens */}
+                <button
+                  className="sm:hidden px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md flex items-center justify-center"
+                  onClick={sendMessageButton}
+                >
+                  <IoSend className="w-5 h-5" />
+                </button>
 
                 <input
                   type="file"

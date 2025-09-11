@@ -46,7 +46,7 @@ const Navbar = () => {
     const token = localStorage.getItem("token");
     try {
       const { data } = await axios.get(
-        `https://chatapp-server-blzi.onrender.com/auth/api/v1?search=${inputData}`,
+        `https://chatapp-server-blzi.onrender.com/api/v1/auth?search=${inputData}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setUsers(data);
