@@ -26,9 +26,9 @@ const Login = () => {
     dispatch(login(email, password, navigate));
   };
 
-  const handleGuestLogin = () => {
-    setFormData({ email: "guest@example.com", password: "123456" });
-  };
+  // const handleGuestLogin = () => {
+  //   setFormData({ email: "guest@example.com", password: "123456" });
+  // };
 
   return (
     <div className="mx-auto p-2 w-full sm:max-w-md">
@@ -80,13 +80,13 @@ const Login = () => {
         >
           Login
         </button>
-        <button
+        {/* <button
           type="button"
           onClick={handleGuestLogin}
           className="bg-red-500 text-white w-full rounded-md py-2 mt-3"
         >
           Get Guest User Credentials
-        </button>
+        </button> */}
       </form>
     </div>
   );
