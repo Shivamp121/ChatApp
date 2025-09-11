@@ -14,7 +14,7 @@ import animationData from "../Animation/typing.json";
 import { useSelector, useDispatch } from "react-redux";
 import { setSelectedChat, setNotification } from "../slices/chatSlice";
 
-const ENDPOINT = "https://chatapp-qfdc.onrender.com";
+const ENDPOINT = "https://chatapp-server-blzi.onrender.com";
 let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {

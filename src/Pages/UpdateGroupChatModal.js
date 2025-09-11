@@ -27,7 +27,7 @@ const UpdateGroupModal = ({ children }) => {
     try {
       const config = { headers: { Authorization: `Bearer ${user?.token}` } };
       const { data } = await axios.put(
-        `https://chatapp-qfdc.onrender.com/api/v1/chat/rename`,
+        `https://chatapp-server-blzi.onrender.com/api/v1/chat/rename`,
         { chatId: selectedChat._id, chatName: groupChatName },
         config
       );
@@ -47,7 +47,7 @@ const UpdateGroupModal = ({ children }) => {
     try {
       const config = { headers: { Authorization: `Bearer ${user?.token}` } };
       const { data } = await axios.put(
-        `https://chatapp-qfdc.onrender.com/api/v1/chat/groupremove`,
+        `https://chatapp-server-blzi.onrender.com/api/v1/chat/groupremove`,
         { chatId: selectedChat._id, userId: userToRemove._id },
         config
       );
@@ -76,7 +76,7 @@ const UpdateGroupModal = ({ children }) => {
     try {
       const config = { headers: { Authorization: `Bearer ${user?.token}` } };
       const { data } = await axios.put(
-        `https://chatapp-qfdc.onrender.com/api/v1/chat/groupadd`,
+        `https://chatapp-server-blzi.onrender.com/api/v1/chat/groupadd`,
         { chatId: selectedChat._id, userId: userToAdd._id },
         config
       );
@@ -94,7 +94,7 @@ const UpdateGroupModal = ({ children }) => {
       setLoading(true);
       const config = { headers: { Authorization: `Bearer ${user?.token}` } };
       const { data } = await axios.get(
-        `https://chatapp-qfdc.onrender.com/auth/api/v1?search=${query}`,
+        `https://chatapp-server-blzi.onrender.com/auth/api/v1?search=${query}`,
         config
       );
       setSearchResult(data);
