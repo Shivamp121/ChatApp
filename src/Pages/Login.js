@@ -7,41 +7,31 @@ import { useDispatch } from "react-redux";
 
 const Login = () => {
   const navigate = useNavigate();
-const dispatch=useDispatch();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
   const { email, password } = formData;
 
   const handleOnChange = (e) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [e.target.name]: e.target.value,
-    }));
+    setFormData((prevData) => ({ ...prevData, [e.target.name]: e.target.value }));
   };
 
-  const handleOnSubmit = async (e) => {
+  const handleOnSubmit = (e) => {
     e.preventDefault();
     if (!email || !password) {
       toast.error("All fields are required");
       return;
     }
-     dispatch(login(email, password, navigate));
+    dispatch(login(email, password, navigate));
   };
 
   const handleGuestLogin = () => {
-    setFormData({
-      email: "guest@example.com",
-      password: "123456",
-    });
+    setFormData({ email: "guest@example.com", password: "123456" });
   };
 
   return (
-    <div className="mx-auto p-2 max-w-md">
+    <div className="mx-auto p-2 w-full sm:max-w-md">
       <form onSubmit={handleOnSubmit}>
         <label className="w-full">
           <p className="mb-1 text-[0.875rem] leading-[1.375rem]">

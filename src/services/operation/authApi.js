@@ -31,7 +31,7 @@ export function signUp(
       formData,
     );
 
-    console.log("SIGNUP API RESPONSE............", response);
+    // console.log("SIGNUP API RESPONSE............", response);
 
     if (!response.data.success) {
       throw new Error(response.data.message);
@@ -61,7 +61,7 @@ export function login(email, password, navigate) {
       { "Content-Type": "application/json" }
     );
 
-    console.log("LOGIN API RESPONSE............", response);
+    // console.log("LOGIN API RESPONSE............", response);
 
     if (!response.data.success) {
       throw new Error(response.data.message);
