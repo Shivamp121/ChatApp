@@ -12,7 +12,7 @@ import UpdateGroupChatModal from "./UpdateGroupChatModal";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import animationData from "../Animation/typing.json";
 import { useSelector, useDispatch } from "react-redux";
-import { setSelectedChat, setNotification } from "../slices/chatSlice";
+import { setSelectedChat, addNotification } from "../slices/chatSlice";
 
 const ENDPOINT = "https://chatapp-server-blzi.onrender.com";
 let socket, selectedChatCompare;
@@ -35,6 +35,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     rendererSettings: { preserveAspectRatio: "xMidYMid slice" },
   };
 
+  // Fetch chat messages
   const fetchMessages = async () => {
     if (!selectedChat) return;
     try {
@@ -51,6 +52,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
+  // Send a new message
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
       socket.emit("stop typing", selectedChat._id);
@@ -68,13 +70,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         );
         setNewMessage("");
         socket.emit("new message", data);
-        setMessages((prev) => [...prev, data]); // ✅ functional update
+        setMessages((prev) => [...prev, data]);
       } catch {
         toast.error("Failed to send the Message");
       }
     }
   };
 
+  // Upload file handler
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -95,14 +98,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           { fileBase64: base64data, chatId: selectedChat._id },
           config
         );
-        socket.emit("new message", data);
-        setMessages((prev) => [...prev, data]); // ✅ functional update
+
+        const newMsg = { ...data, chat: selectedChat };
+
+        socket.emit("new message", newMsg);
+        setMessages((prev) => [...prev, newMsg]);
       } catch {
         toast.error("Failed to upload image");
       }
     };
   };
 
+  // Socket setup
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
@@ -111,28 +118,32 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     socket.on("stop typing", () => setIsTyping(false));
   }, [user]);
 
+  // Load messages when chat changes
   useEffect(() => {
     fetchMessages();
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
+  // Handle incoming messages
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
+      // If no chat selected OR it's from a different chat → notification
       if (!selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id) {
         if (!notification.some((n) => n._id === newMessageRecieved._id)) {
-          dispatch(setNotification([newMessageRecieved, ...notification]));
+          dispatch(addNotification(newMessageRecieved)); // ✅ save to redux + localStorage
           setFetchAgain(!fetchAgain);
         }
       } else {
-        setMessages((prev) => [...prev, newMessageRecieved]); // ✅ functional update
+        setMessages((prev) => [...prev, newMessageRecieved]);
       }
     });
 
     return () => {
-      socket.off("message recieved"); // ✅ cleanup
+      socket.off("message recieved");
     };
   }, [dispatch, fetchAgain, notification]);
 
+  // Typing handler
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
     if (!socketConnected) return;

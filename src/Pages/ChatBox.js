@@ -20,7 +20,7 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
   }, [selectedChat, user]);
 
   return (
-    <div className="w-full h-[97vh] md:h-[100%] bg-white rounded-md p-3 sm:p-4 md:p-5 flex flex-col shadow-sm transition-all duration-300">
+    <div className="w-full h-[94vh] md:h-[100%] bg-white rounded-md p-3 sm:p-4 md:p-5 flex flex-col shadow-sm transition-all duration-300">
       {!selectedChat ? (
         <div className="flex items-center justify-center h-full">
           <p className="text-lg sm:text-xl md:text-2xl font-semibold text-center">
